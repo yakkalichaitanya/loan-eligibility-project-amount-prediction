@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Register - AI-Based Loan Eligibility & Amount Prediction System">
+    <title>Register - AI Loan Eligibility System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-body">
+    <div class="background-glow">
+        <div class="glow-sphere glow-1"></div>
+        <div class="glow-sphere glow-2"></div>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="card login-card">
+            <div class="login-header">
+                <div class="badge">AI Powered Fintech Engine</div>
+                <h2>Create Account</h2>
+                <p>Register a new user account to access the AI Loan Eligibility System</p>
+            </div>
+
+            {% if error %}
+            <div class="error-banner" style="margin-bottom: 1.25rem;">
+                <span class="error-icon">⚠️</span>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form action="{{ url_for('register') }}" method="POST" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" name="username" placeholder="Choose a username" value="{{ username or '' }}" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 1.25rem;">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Register Account</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-link-box">
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

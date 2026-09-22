@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Based Loan Eligibility & Amount Prediction System - Check your loan approval probability, eligible amount, and EMI instantly.">
+    <title>AI-Based Loan Eligibility & Amount Prediction System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-glow">
+        <div class="glow-sphere glow-1"></div>
+        <div class="glow-sphere glow-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Top Bar Navigation -->
+        <nav class="top-nav">
+            <div class="user-profile">
+                <span class="avatar-icon">👤</span>
+                <span class="user-greeting">Welcome, <strong>{{ session.get('user', 'User') }}</strong></span>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn-logout">
+                <span>Logout</span> 🚪
+            </a>
+        </nav>
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="badge">AI Powered Fintech Engine</div>
+            <h1>AI-Based Loan Eligibility & Amount Prediction System</h1>
+            <p>Enter your financial details below to calculate your instant approval probability, max eligible loan amount, and estimated monthly EMI.</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Form Card -->
+            <section class="card form-card">
+                <div class="card-header">
+                    <h2>Customer Financial Profile</h2>
+                    <p>Provide accurate details for precise AI assessment</p>
+                </div>
+
+                <form id="loanForm" class="loan-form" novalidate>
+                    <div class="form-grid">
+                        <!-- 1. Monthly Income -->
+                        <div class="form-group">
+                            <label for="monthly_income">Monthly Income (₹) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" id="monthly_income" name="monthly_income" placeholder="e.g. 60000" min="0" step="1000" required>
+                            </div>
+                            <small class="error-text" id="err-monthly_income"></small>
+                        </div>
+
+                        <!-- 2. Employment Type -->
+                        <div class="form-group">
+                            <label for="employment_type">Employment Type <span class="required">*</span></label>
+                            <div class="select-wrapper">
+                                <select id="employment_type" name="employment_type" required>
+                                    <option value="" disabled selected>Select Employment Type</option>
+                                    <option value="Salaried">Salaried</option>
+                                    <option value="Self-Employed">Self-Employed</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <small class="error-text" id="err-employment_type"></small>
+                        </div>
+
+                        <!-- 3. Credit Score -->
+                        <div class="form-group">
+                            <label for="credit_score">Credit Score (CIBIL) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="number" id="credit_score" name="credit_score" placeholder="e.g. 750 (300 - 900)" min="300" max="900" required>
+                            </div>
+                            <small class="error-text" id="err-credit_score"></small>
+                        </div>
+
+                        <!-- 4. Existing Loans -->
+                        <div class="form-group">
+                            <label for="existing_loans_count">Existing Active Loans <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="number" id="existing_loans_count" name="existing_loans_count" placeholder="e.g. 1" min="0" step="1" required>
+                            </div>
+                            <small class="error-text" id="err-existing_loans_count"></small>
+                        </div>
+
+                        <!-- 5. Existing EMI -->
+                        <div class="form-group">
+                            <label for="existing_emi_monthly">Existing Monthly EMI (₹) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" id="existing_emi_monthly" name="existing_emi_monthly" placeholder="e.g. 5000" min="0" step="500" required>
+                            </div>
+                            <small class="error-text" id="err-existing_emi_monthly"></small>
+                        </div>
+
+                        <!-- 6. Number of Dependents -->
+                        <div class="form-group">
+                            <label for="dependents">Number of Dependents <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dependents" name="dependents" placeholder="e.g. 2" min="0" step="1" required>
+                            </div>
+                            <small class="error-text" id="err-dependents"></small>
+                        </div>
+
+                        <!-- 7. Savings -->
+                        <div class="form-group">
+                            <label for="savings_balance">Savings Balance (₹) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" id="savings_balance" name="savings_balance" placeholder="e.g. 200000" min="0" step="1000" required>
+                            </div>
+                            <small class="error-text" id="err-savings_balance"></small>
+                        </div>
+
+                        <!-- 8. Loan Type -->
+                        <div class="form-group">
+                            <label for="loan_type">Loan Type <span class="required">*</span></label>
+                            <div class="select-wrapper">
+                                <select id="loan_type" name="loan_type" required>
+                                    <option value="" disabled selected>Select Loan Category</option>
+                                    <option value="Personal Loan">Personal Loan</option>
+                                    <option value="Home Loan">Home Loan</option>
+                                    <option value="Car Loan">Car Loan</option>
+                                    <option value="Education Loan">Education Loan</option>
+                                    <option value="Business Loan">Business Loan</option>
+                                </select>
+                            </div>
+                            <small class="error-text" id="err-loan_type"></small>
+                        </div>
+
+                        <!-- 9. Requested Loan Amount -->
+                        <div class="form-group">
+                            <label for="requested_amount">Requested Loan Amount (₹) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" id="requested_amount" name="requested_amount" placeholder="e.g. 1000000" min="10000" step="10000" required>
+                            </div>
+                            <small class="error-text" id="err-requested_amount"></small>
+                        </div>
+
+                        <!-- 10. Loan Tenure in Months -->
+                        <div class="form-group">
+                            <label for="tenure_months">Loan Tenure (Months) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <input type="number" id="tenure_months" name="tenure_months" placeholder="e.g. 60 (12 to 360)" min="6" max="360" required>
+                            </div>
+                            <small class="error-text" id="err-tenure_months"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn" class="btn btn-primary">
+                            <span class="btn-text">Check Loan Eligibility</span>
+                            <span class="btn-spinner hidden"></span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Error Banner -->
+            <div id="errorBanner" class="error-banner hidden">
+                <span class="error-icon">⚠️</span>
+                <span id="errorMessage">An unexpected error occurred.</span>
+            </div>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section hidden">
+                <div class="results-header">
+                    <h2>AI Eligibility Evaluation Results</h2>
+                    <p>Based on machine learning models trained on financial historical data</p>
+                </div>
+
+                <div class="results-grid">
+                    <!-- Card 1: Approval Probability -->
+                    <div class="card result-card card-probability">
+                        <div class="card-badge">Classification Model</div>
+                        <div class="card-icon">🎯</div>
+                        <h3>Approval Probability</h3>
+                        <div class="metric-container">
+                            <div class="radial-progress-wrapper">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring__circle-bg" stroke="rgba(255, 255, 255, 0.1)" stroke-width="10" fill="transparent" r="50" cx="60" cy="60"/>
+                                    <circle id="probabilityRing" class="progress-ring__circle" stroke="#10b981" stroke-width="10" fill="transparent" r="50" cx="60" cy="60"/>
+                                </svg>
+                                <div id="probabilityText" class="progress-text">0%</div>
+                            </div>
+                        </div>
+                        <p id="probabilityLabel" class="metric-subtext">Calculating approval status...</p>
+                    </div>
+
+                    <!-- Card 2: Eligible Loan Amount -->
+                    <div class="card result-card card-amount">
+                        <div class="card-badge">Regression Model</div>
+                        <div class="card-icon">💰</div>
+                        <h3>Eligible Loan Amount</h3>
+                        <div class="metric-container">
+                            <div id="eligibleAmountText" class="metric-value">₹0</div>
+                        </div>
+                        <p class="metric-subtext">Maximum sanctioned loan amount</p>
+                    </div>
+
+                    <!-- Card 3: Estimated EMI -->
+                    <div class="card result-card card-emi">
+                        <div class="card-badge">Financial Calculation</div>
+                        <div class="card-icon">📅</div>
+                        <h3>Estimated Monthly EMI</h3>
+                        <div class="metric-container">
+                            <div id="estimatedEmiText" class="metric-value">₹0</div>
+                        </div>
+                        <p class="metric-subtext">Estimated monthly payment @ 10.5% p.a.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2026 AI-Based Loan Eligibility System. B.Tech Capstone Project.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
